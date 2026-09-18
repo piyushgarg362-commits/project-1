@@ -1,0 +1,12 @@
+devops-project/
+├── src/
+│   └── main/
+│       └── java/
+│           └── com/
+│               └── devops/
+│                   └── App.java
+│
+├── pom.xml
+├── Dockerfile
+├── Jenkinsfile
+└── README.md
