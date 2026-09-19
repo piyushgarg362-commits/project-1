@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY target/devops-project-1.0.jar app.jar
 
-EXPOSE 8080
+EXPOSE 8088
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
