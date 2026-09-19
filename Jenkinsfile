@@ -1,64 +1,58 @@
+```groovy
 pipeline {
-
     agent any
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
+                echo '=== Checking out source code ==='
                 checkout scm
+                echo '=== Checkout completed ==='
             }
         }
 
-        stage('Build') {
+        stage('Maven Test') {
             steps {
-                echo 'Building application with Maven...'
-                sh 'mvn clean package'
+                echo '=== Running Maven tests ==='
+                sh 'mvn clean test'
+                echo '=== Maven tests completed successfully ==='
             }
         }
 
-        stage('Test') {
+        stage('Maven Package') {
             steps {
-                echo 'Running tests...'
-                sh 'mvn test'
+                echo '=== Packaging application ==='
+                sh 'mvn package -DskipTests'
+                echo '=== Application packaged successfully ==='
             }
         }
 
         stage('Docker Build') {
             steps {
-                echo 'Building Docker image...'
-                sh 'docker build -t devops-project:1.0 .'
-            }
-        }
-
-        stage('Docker Run') {
-            steps {
-                echo 'Running Docker container...'
-
-                sh '''
-                    docker rm -f devops-project-container || true
-
-                    docker run \
-                        --name devops-project-container \
-                        devops-project:1.0
-                '''
+                echo '=== Building Docker image ==='
+                sh 'docker build -t my-maven-app:1.0 .'
+                echo '=== Docker image built successfully ==='
             }
         }
     }
 
     post {
-
         success {
-            echo '================================='
-            echo 'Pipeline completed successfully!'
-            echo '================================='
+            echo '========================================'
+            echo 'PIPELINE COMPLETED SUCCESSFULLY'
+            echo '========================================'
         }
 
         failure {
-            echo '================================='
-            echo 'Pipeline failed!'
-            echo '================================='
+            echo '========================================'
+            echo 'PIPELINE FAILED - CHECK THE CONSOLE LOG'
+            echo '========================================'
+        }
+
+        always {
+            echo '=== Pipeline execution finished ==='
         }
     }
 }
+```
