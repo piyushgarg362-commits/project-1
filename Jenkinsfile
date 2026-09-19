@@ -6,52 +6,59 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo '=== Checking out source code ==='
+                echo '=== CHECKOUT: Getting source code from Git ==='
                 checkout scm
-                echo '=== Checkout completed ==='
+                echo '=== CHECKOUT: SUCCESS ==='
             }
         }
 
         stage('Maven Test') {
             steps {
-                echo '=== Running Maven tests ==='
+                echo '=== TEST: Running Maven tests ==='
                 sh 'mvn clean test'
-                echo '=== Maven tests completed successfully ==='
+                echo '=== TEST: SUCCESS ==='
             }
         }
 
         stage('Maven Package') {
             steps {
-                echo '=== Packaging application ==='
+                echo '=== PACKAGE: Creating JAR file ==='
                 sh 'mvn package -DskipTests'
-                echo '=== Application packaged successfully ==='
+                echo '=== PACKAGE: SUCCESS ==='
+
+                echo '=== Generated files ==='
+                sh 'ls -lh target/'
             }
         }
 
         stage('Docker Build') {
             steps {
-                echo '=== Building Docker image ==='
-                sh 'docker build -t my-maven-app:1.0 .'
-                echo '=== Docker image built successfully ==='
+                echo '=== DOCKER: Building Docker image ==='
+                sh 'docker build -t devops-project:1.0 .'
+                echo '=== DOCKER BUILD: SUCCESS ==='
+
+                echo '=== Docker images ==='
+                sh 'docker images | grep devops-project || true'
             }
         }
     }
 
     post {
         success {
-            echo '========================================'
-            echo 'PIPELINE COMPLETED SUCCESSFULLY'
-            echo '========================================'
+            echo '======================================'
+            echo 'PIPELINE SUCCESSFUL!'
+            echo '======================================'
         }
 
         failure {
-            echo '========================================'
-            echo 'PIPELINE FAILED - CHECK THE CONSOLE LOG'
-            echo '========================================'
+            echo '======================================'
+            echo 'PIPELINE FAILED!'
+            echo 'Check the failed stage above.'
+            echo '======================================'
         }
 
         always {
-            echo '=== Pipeline execution finished ==='
+            echo '=== Jenkins pipeline execution finished ==='
         }
     }
 }
